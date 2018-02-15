@@ -1,0 +1,1 @@
+Add-VpnConnection -Name MySstp -ServerAddress 172.25.0.254 -TunnelType "Sstp" -EncryptionLevel "Required" -AuthenticationMethod MSChapv2 -UseWinlogonCredential -AllUserConnection -RememberCredential -PassThru

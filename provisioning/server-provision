@@ -1,0 +1,13 @@
+#!/bin/sh
+
+useradd student -p $(echo student | openssl passwd -stdin -1) -G wheel
+usermod root -p $(echo redhat | openssl passwd -stdin -1)
+
+systemctl enable firewalld.service
+systemctl start firewalld.service
+
+# Life hack to avoid vagrant nat requirement
+nohup sh -c 'sleep 10 && nmcli connection modify eth0 autoconnect false && nmcli connection down eth0' &
+
+# dnf update -y
+

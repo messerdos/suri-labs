@@ -1,0 +1,6 @@
+---
+- hosts: mikrotik
+  gather_facts: yes
+  connection: local
+  roles:
+    - mk-setup   

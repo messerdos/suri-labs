@@ -1,0 +1,7 @@
+---
+- name: Upload setup-script
+  command: "sshpass -p '{{ansible_ssh_pass}}' scp -P {{ansible_ssh_port}} -o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 ./roles/mk-setup/files/setup-script.rsc {{ansible_ssh_user}}@{{ansible_ssh_host}}:/setup-script.rsc"  
+
+- name: Run setup-script
+  command: "sshpass -p '{{ansible_ssh_pass}}' ssh -T -p {{ansible_ssh_port}} -o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 {{ansible_ssh_user}}@{{ansible_ssh_host}} '/import file=setup-script.rsc'"
+
