@@ -38,6 +38,7 @@ Vagrant.configure("2") do |config|
       }
     end
   end
+  
   config.vm.define :server do |server|
     server.vm.box = "generic/fedora25"
     server.vm.hostname = "server"
@@ -55,7 +56,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define :server do |client|
+  config.vm.define :client do |client|
     client.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
     client.vbguest.auto_update = true
     client.vm.hostname = "client"
@@ -64,6 +65,7 @@ Vagrant.configure("2") do |config|
     client.vm.network "private_network", ip: "172.25.0.21"
     client.vm.provision "shell", path: "provisioning/provision.ps1", privileged: true
   end
+
 end
 
 
