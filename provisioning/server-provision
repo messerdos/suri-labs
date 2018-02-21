@@ -5,9 +5,27 @@ usermod root -p $(echo redhat | openssl passwd -stdin -1)
 
 systemctl enable firewalld.service
 systemctl start firewalld.service
+firewall-cmd --add-port=37008/udp --permanent
+firewall-cmd --reload
 
 # Life hack to avoid vagrant nat requirement
 # nohup sh -c 'sleep 10 && nmcli connection modify eth0 autoconnect false && nmcli connection down eth0' &
 
-dnf update -y
-dnf install openvpn -y
+# Prepare system and install packages
+wget https://download.docker.com/linux/fedora/docker-ce.repo -O /etc/yum.repos.d/docker-ce.repo && \
+dnf update -y && \
+dnf install dnf-plugins-core suricata policycoreutils glibc.i686 openvpn docker-ce nano emacs-nox zsh util-linux-user -y && \
+pip install docker-compose && \
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" && \
+systemctl enable docker && systemctl start docker
+
+# Prepare trafr mikrotik utility for suricata
+wget https://mikrotik.com/download/trafr.tgz && tar -zxf trafr.tgz && rm -f trafr.tgz && \
+mv trafr /usr/local/sbin/trafr && chown root:root /usr/local/sbin/trafr && chmod 755 /usr/local/sbin/trafr && \
+restorecon -Rv /usr/local/bin/
+
+# Prepare snorby web portal
+cd ~ && git clone https://github.com/messerdos/snorby-dockerized && \
+cp systemd/suricata.service /etc/systemd/system && systemctl enable suricata && systemctl start suricata
+mkdir /etc/docker/compose/ && cp systemd/docker-snorby.service /etc/systemd/system && systemctl enable docker-snorby && \
+systemctl start docker-snorby 

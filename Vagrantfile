@@ -44,7 +44,7 @@ Vagrant.configure("2") do |config|
     server.vm.hostname = "server"
     server.vbguest.auto_update = false
     server.vm.network "private_network", ip: "172.25.0.11", auto_config: false
-    server.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 10 && nmcli con modify '#{conname}' ipv4.addresses 172.25.0.11/24 ipv4.gateway 172.25.0.254 ipv4.dns 172.25.0.254 ipv4.route-metric 10 ipv4.method manual && nmcli con up '#{conname}'"
+    server.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 10 && nmcli con modify '#{conname}' ipv4.addresses 172.25.0.11/24 ipv4.dns 172.25.0.254 ipv4.method manual && nmcli con up '#{conname}'"
     server.vm.provision :shell, path: "provisioning/server-provision"
     server.vm.provision "file", source: "configs/client.conf", destination: "/home/vagrant/client.conf"
     server.vm.provision "file", source: "configs/auth.cfg", destination: "/home/vagrant/auth.cfg"

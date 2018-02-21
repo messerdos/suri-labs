@@ -18,11 +18,10 @@ fi
 echo "Preparing crypto keys for our project"
 echo "We need init pki env and generate server and client certificates and keys"
 echo "You should choose new password for ca cert and use it througout the procedure" 
-# echo "If you don't know what to do, just hit [Enter]"
-echo "Ready?" && read
+echo "Ready? Hit [Enter]" && read
 cd ./easy-rsa/easyrsa3/ && ./easyrsa init-pki &&
 ./easyrsa build-ca &&
 ./easyrsa gen-req server nopass && ./easyrsa gen-req client nopass &&
 ./easyrsa sign-req server server && ./easyrsa sign-req client client &&
 ./easyrsa gen-dh && 
-vagrant up mikrotik 
+vagrant up
