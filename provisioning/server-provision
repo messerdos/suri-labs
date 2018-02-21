@@ -26,6 +26,7 @@ restorecon -Rv /usr/local/bin/
 
 # Prepare snorby web portal
 cd ~ && git clone https://github.com/messerdos/snorby-dockerized && \
+cd snorby-dockerized && docker-compose build && \
 cp systemd/suricata.service /etc/systemd/system && systemctl enable suricata && systemctl start suricata
 mkdir /etc/docker/compose/ && cp systemd/docker-snorby.service /etc/systemd/system && systemctl enable docker-snorby && \
 systemctl start docker-snorby 

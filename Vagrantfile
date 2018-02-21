@@ -33,7 +33,8 @@ Vagrant.configure("2") do |config|
       ansible.sudo = false
       ansible.host_vars = {
         "mikrotik" => {
-          "ansible_ssh_pass" => "vagrant"
+          "ansible_ssh_pass" => "vagrant",
+          "ansible_ssh_user" => "vagrant"
         }
       }
     end
