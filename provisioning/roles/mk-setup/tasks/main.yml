@@ -1,7 +1,18 @@
 ---
+- name: Upload ovpn files
+  command: "sshpass -p '{{ansible_ssh_pass}}' scp -P {{ansible_ssh_port}} -o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 ../easy-rsa/easyrsa3/pki/ca.crt ../easy-rsa/easyrsa3/pki/private/server.key ../easy-rsa/easyrsa3/pki/issued/server.crt {{ansible_ssh_user}}@{{ansible_ssh_host}}:/"
+
+- name: Import CA crt
+  command: "sshpass -p '{{ansible_ssh_pass}}' ssh -T -p {{ansible_ssh_port}} -o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 {{ansible_ssh_user}}@{{ansible_ssh_host}} '/certificate import passphrase=\"\" file-name=ca.crt'"
+
+- name: Import ovpn server crt
+  command: "sshpass -p '{{ansible_ssh_pass}}' ssh -T -p {{ansible_ssh_port}} -o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 {{ansible_ssh_user}}@{{ansible_ssh_host}} '/certificate import passphrase=\"\" file-name=server.crt'"
+
+- name: Import ovpn server key
+  command: "sshpass -p '{{ansible_ssh_pass}}' ssh -T -p {{ansible_ssh_port}} -o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 {{ansible_ssh_user}}@{{ansible_ssh_host}} '/certificate import passphrase=\"\" file-name=server.key'"
+
 - name: Upload setup-script
   command: "sshpass -p '{{ansible_ssh_pass}}' scp -P {{ansible_ssh_port}} -o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 ./roles/mk-setup/files/setup-script.rsc {{ansible_ssh_user}}@{{ansible_ssh_host}}:/setup-script.rsc"  
 
 - name: Run setup-script
   command: "sshpass -p '{{ansible_ssh_pass}}' ssh -T -p {{ansible_ssh_port}} -o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 {{ansible_ssh_user}}@{{ansible_ssh_host}} '/import file=setup-script.rsc'"
-
