@@ -8,7 +8,7 @@ if [ "$(id -u)" == "0" ]; then
 fi
 
 vagrant -v > /dev/null 2>&1 || { echo "Vagrant is required but it's not installed. Aborting." >&2; exit 1; }
-
+ansible --version > /dev/null 2>&1 || { echo "Ansible is required but it's not installed. Aborting." >&2; exit 1; }
 vagrant plugin list | grep vbguest > /dev/null 2>&1 || { echo "Vagrant vbguest plugin is required but it's not installed. Aborting." >&2; exit 1; }
 
 if [ ! -f ./easy-rsa/easyrsa3/easyrsa ]; then
