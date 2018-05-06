@@ -23,6 +23,7 @@ Vagrant.configure("2") do |config|
     mikrotik.ssh.keys_only = false
     mikrotik.ssh.insert_key = false
     mikrotik.vm.network "private_network", ip: "172.25.0.254", auto_config: false
+    mikrotik.vm.network "private_network", ip: "172.16.0.254", auto_config: false
     mikrotik.vm.box_check_update = false
     mikrotik.vbguest.auto_update = false
     mikrotik.vm.synced_folder ".", "/vagrant", disabled: true
@@ -63,13 +64,32 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  
+  config.vm.define :web-server do |web-server|
+    web-server.vm.box = "generic/fedora25"
+    web-server.vm.hostname = "server"
+    web-server.vbguest.auto_update = false
+    web-server.vm.network "private_network", ip: "172.16.0.22", auto_config: false
+    web-server.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 10 && nmcli con modify '#{conname}' ipv4.addresses 172.16.0.22/24 ipv4.dns 172.16.0.254 ipv4.method manual && nmcli con up '#{conname}'"
+    web-server.vm.provision :shell, path: "provisioning/web-server-provision"
+    web-server.vm.provider "virtualbox" do |vbox, override|
+      vbox.cpus = 1
+      vbox.memory = server_memory
+      if !File.exist?(vbox_vm_path + 'rhel_server_2.vdi')
+        vbox.customize ['createhd', '--filename', vbox_vm_path + 'rhel_web-server_2.vdi', '--variant', 'Fixed', '--size', extra_disk_size * 1024]
+      end
+      vbox.customize ['storageattach', :id,  '--storagectl', 'IDE Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', vbox_vm_path + 'rhel_web-server_2.vdi']
+    end
+  end
+  
+  
   config.vm.define :client do |client|
     client.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
     client.vbguest.auto_update = true
     client.vm.hostname = "client"
     # do NOT download the iso file from a webserver
     client.vbguest.no_remote = true
-    client.vm.network "private_network", ip: "172.25.0.21"
+    client.vm.network "private_network", ip: "172.16.0.21"
     client.vm.provision "shell", path: "provisioning/provision.ps1", privileged: true
   end
 
