@@ -65,17 +65,17 @@ Vagrant.configure("2") do |config|
   end
 
   
-  config.vm.define :web-server do |web-server|
-    web-server.vm.box = "generic/fedora25"
-    web-server.vm.hostname = "server"
-    web-server.vbguest.auto_update = false
-    web-server.vm.network "private_network", ip: "172.16.0.22", auto_config: false
-    web-server.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 10 && nmcli con modify '#{conname}' ipv4.addresses 172.16.0.22/24 ipv4.dns 172.16.0.254 ipv4.method manual && nmcli con up '#{conname}'"
-    web-server.vm.provision :shell, path: "provisioning/web-server-provision"
-    web-server.vm.provider "virtualbox" do |vbox, override|
+  config.vm.define :webserver do |webserver|
+    webserver.vm.box = "generic/fedora25"
+    webserver.vm.hostname = "server"
+    webserver.vbguest.auto_update = false
+    webserver.vm.network "private_network", ip: "172.16.0.22", auto_config: false
+    webserver.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 10 && nmcli con modify '#{conname}' ipv4.addresses 172.16.0.22/24 ipv4.dns 172.16.0.254 ipv4.method manual && nmcli con up '#{conname}'"
+    webserver.vm.provision :shell, path: "provisioning/web-server-provision"
+    webserver.vm.provider "virtualbox" do |vbox, override|
       vbox.cpus = 1
       vbox.memory = server_memory
-      if !File.exist?(vbox_vm_path + 'rhel_server_2.vdi')
+      if !File.exist?(vbox_vm_path + 'rhel_web-server_2.vdi')
         vbox.customize ['createhd', '--filename', vbox_vm_path + 'rhel_web-server_2.vdi', '--variant', 'Fixed', '--size', extra_disk_size * 1024]
       end
       vbox.customize ['storageattach', :id,  '--storagectl', 'IDE Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', vbox_vm_path + 'rhel_web-server_2.vdi']
