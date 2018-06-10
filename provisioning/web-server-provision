@@ -4,6 +4,6 @@ useradd student -p $(echo student | openssl passwd -stdin -1) -G wheel
 usermod root -p $(echo redhat | openssl passwd -stdin -1)
 
 dnf update -y && \
-dnf install nginx && \
+dnf install nginx -y && \
 systemctl enable nginx && systemctl start nginx
 

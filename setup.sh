@@ -25,7 +25,7 @@ cd ./easy-rsa/easyrsa3/ && ./easyrsa init-pki &&
 ./easyrsa build-ca &&
 ./easyrsa gen-req server nopass && ./easyrsa gen-req client nopass &&
 ./easyrsa sign-req server server && ./easyrsa sign-req client client &&
-./easyrsa gen-dh && 
+./easyrsa gen-dh 
 
 # Not so fast plz
 # vagrant up
